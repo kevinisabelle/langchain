@@ -1,24 +1,17 @@
-# create a langchain agant to search google scholar
-
-from langchainagent import LangChainAgent
-from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.llms import OpenAI
-from langchain.chains.question_answering import load_qa_chain
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-import numpy as np
-import faiss
 import os
-import json
-import requests
-import re
-import time
-import random
-import string
-import sys
-import logging
+from langchain.agents import load_tools
+from langchain.agents import initialize_agent
+from langchain.agents import AgentType
+from langchain.llms import OpenAI
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
+llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
 
-class GoogleScholarAgent(LangChainAgent):
+tools = load_tools(["serpapi", "llm-math"], llm=llm)
+
+agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+result = agent.run("Who is Leo DiCaprio's girlfriend? What is her current age raised to the 0.43 power?")
+
+print(result)
