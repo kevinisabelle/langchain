@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <title>Document Semantic Search</title>
+    <!-- use google font-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+      rel="stylesheet"
+    />
+    <!-- use material icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        font-size: 20px;
+        line-height: 1.5;
+        color: #333;
+        background-color: #fff;
+      }
+
+      .wait {
+        font-size: 49px;
+        visibility: hidden;
+        margin-top: -30px;
+        color: coral;
+        /* animate */
+        animation-name: blinker;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div style="text-align: center">
+      <h1>Document Semantic Search</h1>
+      <select>
+        <!--<option
+        value="Atmel-8331-8-and-16-bit-AVR-Microcontroller-XMEGA-AU_Manual.pdf"
+      >
+        Atmel-8331-8-and-16-bit-AVR-Microcontroller-XMEGA-AU_Manual.pdf
+      </option>-->
+        <option selected value="ORH1600-tous-en-un1.pdf">
+          ORH1600-tous-en-un1.pdf
+        </option>
+      </select>
+      <br />
+
+      <input type="text" id="search" style="width: 50%" />
+      <span id="waiter" class="wait material-symbols-outlined">
+        neurology
+      </span>
+      <br />
+
+      <button id="search-button" onclick="return QueryDocument();">
+        Search
+      </button>
+    </div>
+    <br />
+    <div id="results"></div>
+  </body>
+  <script>
+    function QueryDocument() {
+      var query = document.getElementById("search").value;
+      var documentName = document.getElementsByTagName("option")[0].value;
+      // get span with id waiter and set it to visible
+      var waiter = document.getElementById("waiter");
+      waiter.style.visibility = "visible";
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          var resultsDiv = document.getElementById("results");
+          //resultsDiv.innerHTML = "";
+
+          var resultDiv = document.createElement("div");
+          resultDiv.innerHTML =
+            "<hr></hr><b>" + query + ":</b><br/>" + this.responseText;
+          resultsDiv.prepend(resultDiv);
+
+          // set span with id waiter to invisible
+          waiter.style.visibility = "hidden";
+        }
+      };
+      xhttp.open(
+        "GET",
+        "/query?k=20&document=" + documentName + "&query=" + query,
+        true
+      );
+      xhttp.send();
+
+      return false;
+    }
+  </script>
+</html>

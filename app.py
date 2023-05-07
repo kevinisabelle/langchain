@@ -1,5 +1,7 @@
 import os
+
 from flask import Flask, render_template, request
+import monkey_patch
 from langchain.document_loaders import PyPDFLoader, OnlinePDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
@@ -79,6 +81,11 @@ def query():
     top_docs = get_top_docs(query, index, texts, k=k)
     results = query_docs(query, top_docs)
     return results
+
+
+@app.route('/ui', methods=['GET'])
+def ui():
+    return render_template('index.html')
 
 
 # run app
